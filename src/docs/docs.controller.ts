@@ -1,0 +1,590 @@
+import { Controller, Get, Res } from '@nestjs/common';
+import { Response } from 'express';
+
+/**
+ * API 문서화를 위한 컨트롤러
+ * Swagger 대신 간단한 HTML 문서를 제공
+ */
+@Controller('docs')
+export class DocsController {
+  /**
+   * API 문서 페이지 제공
+   * @param res Express Response 객체
+   */
+  @Get()
+  getApiDocs(@Res() res: Response) {
+    const html = this.generateApiDocsHtml();
+    res.setHeader('Content-Type', 'text/html');
+    res.send(html);
+  }
+
+  /**
+   * API 문서 HTML 생성
+   * @returns API 문서 HTML 문자열
+   */
+  private generateApiDocsHtml(): string {
+    return `
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>GST Admin API 문서</title>
+      <style>
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #333;
+          background-color: #f5f5f5;
+        }
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        header {
+          background-color: #2c3e50;
+          color: white;
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+        h1 {
+          margin: 0;
+          font-size: 24px;
+        }
+        .version {
+          font-size: 14px;
+          margin-top: 5px;
+          opacity: 0.8;
+        }
+        .controller {
+          background-color: white;
+          border-radius: 5px;
+          margin-bottom: 20px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          overflow: hidden;
+        }
+        .controller-header {
+          background-color: #f8f9fa;
+          padding: 15px;
+          border-bottom: 1px solid #e9ecef;
+        }
+        .controller-name {
+          margin: 0;
+          font-size: 18px;
+          color: #2c3e50;
+        }
+        .controller-path {
+          font-size: 14px;
+          color: #6c757d;
+          margin-top: 5px;
+        }
+        .controller-description {
+          margin-top: 5px;
+          font-size: 14px;
+        }
+        .endpoints {
+          padding: 0;
+        }
+        .endpoint {
+          padding: 15px;
+          border-bottom: 1px solid #e9ecef;
+        }
+        .endpoint:last-child {
+          border-bottom: none;
+        }
+        .method {
+          display: inline-block;
+          padding: 4px 8px;
+          border-radius: 3px;
+          font-size: 12px;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: white;
+          margin-right: 10px;
+        }
+        .method-get {
+          background-color: #61affe;
+        }
+        .method-post {
+          background-color: #49cc90;
+        }
+        .method-put {
+          background-color: #fca130;
+        }
+        .method-delete {
+          background-color: #f93e3e;
+        }
+        .endpoint-path {
+          font-family: monospace;
+          font-size: 14px;
+        }
+        .endpoint-summary {
+          margin-top: 10px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+        .endpoint-description {
+          margin-top: 5px;
+          font-size: 14px;
+        }
+        .security {
+          margin-top: 10px;
+        }
+        .security-item {
+          display: inline-block;
+          background-color: #e9ecef;
+          padding: 2px 8px;
+          border-radius: 3px;
+          font-size: 12px;
+          margin-right: 5px;
+          color: #495057;
+        }
+        .roles {
+          margin-top: 5px;
+        }
+        .role {
+          display: inline-block;
+          background-color: #6c757d;
+          padding: 2px 8px;
+          border-radius: 3px;
+          font-size: 12px;
+          margin-right: 5px;
+          color: white;
+        }
+        .parameters, .request-body, .responses {
+          margin-top: 15px;
+        }
+        .section-title {
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 14px;
+        }
+        th, td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #e9ecef;
+        }
+        th {
+          background-color: #f8f9fa;
+        }
+        .required {
+          color: #f93e3e;
+          font-weight: bold;
+        }
+        .status-code {
+          display: inline-block;
+          padding: 2px 8px;
+          border-radius: 3px;
+          font-size: 12px;
+          margin-right: 5px;
+        }
+        .status-200, .status-201 {
+          background-color: #49cc90;
+          color: white;
+        }
+        .status-400, .status-401, .status-403, .status-404 {
+          background-color: #f93e3e;
+          color: white;
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <div class="container">
+          <h1>GST Admin API 문서</h1>
+          <div class="version">버전: 1.0.0</div>
+        </div>
+      </header>
+      
+      <div class="container">
+        <!-- 인증 컨트롤러 -->
+        <div class="controller">
+          <div class="controller-header">
+            <h2 class="controller-name">AuthController</h2>
+            <div class="controller-path">기본 경로: /auth</div>
+            <div class="controller-description">인증 관련 API 컨트롤러</div>
+          </div>
+          
+          <div class="endpoints">
+            <!-- 로그인 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/auth/login</span>
+              </div>
+              
+              <div class="endpoint-summary">사용자 로그인 API</div>
+              <div class="endpoint-description">이메일과 비밀번호를 사용하여 로그인하고 JWT 토큰을 발급받습니다.</div>
+              
+              <div class="request-body">
+                <div class="section-title">요청 본문 (LoginDto)</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>필드</th>
+                      <th>타입</th>
+                      <th>필수</th>
+                      <th>예시</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>email</td>
+                      <td>string</td>
+                      <td><span class="required">Y</span></td>
+                      <td>user@example.com</td>
+                    </tr>
+                    <tr>
+                      <td>password</td>
+                      <td>string</td>
+                      <td><span class="required">Y</span></td>
+                      <td>password123</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-200">200</span></td>
+                      <td>로그인 성공</td>
+                      <td>{ accessToken: string, refreshToken: string }</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>인증 실패</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 토큰 갱신 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/auth/refresh</span>
+              </div>
+              
+              <div class="endpoint-summary">토큰 갱신 API</div>
+              <div class="endpoint-description">리프레시 토큰을 사용하여 새로운 액세스 토큰을 발급받습니다.</div>
+              
+              <div class="request-body">
+                <div class="section-title">요청 본문 (RefreshTokenDto)</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>필드</th>
+                      <th>타입</th>
+                      <th>필수</th>
+                      <th>예시</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>refreshToken</td>
+                      <td>string</td>
+                      <td><span class="required">Y</span></td>
+                      <td>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-200">200</span></td>
+                      <td>토큰 갱신 성공</td>
+                      <td>{ accessToken: string, refreshToken: string }</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>유효하지 않은 리프레시 토큰</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 로그아웃 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/auth/logout</span>
+              </div>
+              
+              <div class="endpoint-summary">로그아웃 API</div>
+              <div class="endpoint-description">사용자 로그아웃을 처리합니다.</div>
+              
+              <div class="security">
+                <strong>인증:</strong>
+                <span class="security-item">JWT</span>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-200">200</span></td>
+                      <td>로그아웃 성공</td>
+                      <td>-</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>인증되지 않은 사용자</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 프로필 조회 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-get">GET</span>
+                <span class="endpoint-path">/auth/profile</span>
+              </div>
+              
+              <div class="endpoint-summary">사용자 프로필 조회 API</div>
+              <div class="endpoint-description">현재 로그인한 사용자의 프로필 정보를 조회합니다.</div>
+              
+              <div class="security">
+                <strong>인증:</strong>
+                <span class="security-item">JWT</span>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-200">200</span></td>
+                      <td>프로필 조회 성공</td>
+                      <td>User</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>인증되지 않은 사용자</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 사용자 컨트롤러 -->
+        <div class="controller">
+          <div class="controller-header">
+            <h2 class="controller-name">UsersController</h2>
+            <div class="controller-path">기본 경로: /users</div>
+            <div class="controller-description">사용자 관리 API 컨트롤러</div>
+          </div>
+          
+          <div class="endpoints">
+            <!-- 사용자 생성 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-post">POST</span>
+                <span class="endpoint-path">/users</span>
+              </div>
+              
+              <div class="endpoint-summary">사용자 생성 API</div>
+              <div class="endpoint-description">새로운 사용자를 생성합니다.</div>
+              
+              <div class="security">
+                <strong>인증:</strong>
+                <span class="security-item">JWT</span>
+              </div>
+              
+              <div class="roles">
+                <strong>권한:</strong>
+                <span class="role">ADMIN</span>
+              </div>
+              
+              <div class="request-body">
+                <div class="section-title">요청 본문 (CreateUserDto)</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>필드</th>
+                      <th>타입</th>
+                      <th>필수</th>
+                      <th>예시</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>email</td>
+                      <td>string</td>
+                      <td><span class="required">Y</span></td>
+                      <td>user@example.com</td>
+                    </tr>
+                    <tr>
+                      <td>password</td>
+                      <td>string</td>
+                      <td><span class="required">Y</span></td>
+                      <td>password123</td>
+                    </tr>
+                    <tr>
+                      <td>name</td>
+                      <td>string</td>
+                      <td>N</td>
+                      <td>김지원</td>
+                    </tr>
+                    <tr>
+                      <td>role</td>
+                      <td>Role</td>
+                      <td>N</td>
+                      <td>ADMIN 또는 USER</td>
+                    </tr>
+                    <tr>
+                      <td>profileImage</td>
+                      <td>string</td>
+                      <td>N</td>
+                      <td>https://example.com/profile.jpg</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-201">201</span></td>
+                      <td>사용자 생성 성공</td>
+                      <td>User</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-400">400</span></td>
+                      <td>잘못된 요청</td>
+                      <td>-</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>인증되지 않은 사용자</td>
+                      <td>-</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-403">403</span></td>
+                      <td>권한 없음</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 사용자 목록 조회 엔드포인트 -->
+            <div class="endpoint">
+              <div>
+                <span class="method method-get">GET</span>
+                <span class="endpoint-path">/users</span>
+              </div>
+              
+              <div class="endpoint-summary">전체 사용자 목록 조회 API</div>
+              <div class="endpoint-description">모든 사용자 목록을 조회합니다.</div>
+              
+              <div class="security">
+                <strong>인증:</strong>
+                <span class="security-item">JWT</span>
+              </div>
+              
+              <div class="roles">
+                <strong>권한:</strong>
+                <span class="role">ADMIN</span>
+              </div>
+              
+              <div class="responses">
+                <div class="section-title">응답</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>상태 코드</th>
+                      <th>설명</th>
+                      <th>타입</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="status-code status-200">200</span></td>
+                      <td>사용자 목록 조회 성공</td>
+                      <td>User[]</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-401">401</span></td>
+                      <td>인증되지 않은 사용자</td>
+                      <td>-</td>
+                    </tr>
+                    <tr>
+                      <td><span class="status-code status-403">403</span></td>
+                      <td>권한 없음</td>
+                      <td>-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+  }
+}

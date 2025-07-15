@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./build",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node16",
+    "noEmitOnError": false,
+    "ignoreDeprecations": "5.0"
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "generated",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/*"
+  ]
+}
