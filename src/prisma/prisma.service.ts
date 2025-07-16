@@ -26,6 +26,6 @@ export class PrismaService {
 
   // users.service.ts에서 사용하는 이름과 일치시키기 위한 getter
   get users() {
-    return this.prismaClient.user;
+    return this.prismaClient.users;
   }
 }
